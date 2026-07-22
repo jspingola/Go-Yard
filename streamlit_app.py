@@ -17,9 +17,34 @@ from flyer import build_flyer
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 LOGO = os.path.join(HERE, "logo.png")
-st.set_page_config(page_title="HR Board",
+st.set_page_config(page_title="Go Yard",
                    page_icon=LOGO if os.path.exists(LOGO) else "\u26be",
                    layout="centered")
+
+# Tell iOS which icon + name to use when you tap "Add to Home Screen".
+# We inject these into the page's <head> pointing at logo.png in the repo,
+# so the home-screen tile shows your baseball instead of a generic icon.
+_ICON_URL = "https://raw.githubusercontent.com/jspingola/Go-Yard/main/logo.png"
+components.html(
+    f"""
+    <script>
+      const head = window.parent.document.head;
+      head.querySelectorAll('[data-goyard]').forEach(e => e.remove());
+      const mk = (tag, attrs) => {{
+        const el = window.parent.document.createElement(tag);
+        Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+        el.setAttribute('data-goyard', '1');
+        head.appendChild(el);
+      }};
+      mk('link', {{rel: 'apple-touch-icon', href: '{_ICON_URL}'}});
+      mk('link', {{rel: 'apple-touch-icon-precomposed', href: '{_ICON_URL}'}});
+      mk('meta', {{name: 'apple-mobile-web-app-capable', content: 'yes'}});
+      mk('meta', {{name: 'mobile-web-app-capable', content: 'yes'}});
+      mk('meta', {{name: 'apple-mobile-web-app-title', content: 'Go Yard'}});
+    </script>
+    """,
+    height=0,
+)
 
 SEASON = 2026
 DISPLAY_COLS = ["player", "team", "opp_SP", "slot", "p_HR_%",
