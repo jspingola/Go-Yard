@@ -15,12 +15,11 @@ import hr_model as hm
 import store
 from flyer import build_flyer
 
-LOGO = "logo.png"
+HERE = os.path.dirname(os.path.abspath(__file__))
+LOGO = os.path.join(HERE, "logo.png")
 st.set_page_config(page_title="HR Board",
                    page_icon=LOGO if os.path.exists(LOGO) else "\u26be",
                    layout="centered")
-if os.path.exists(LOGO):
-    st.logo(LOGO)
 
 SEASON = 2026
 DISPLAY_COLS = ["player", "team", "opp_SP", "slot", "p_HR_%",
@@ -32,7 +31,12 @@ def run_board(date_str, season, top_n):
     return hm.run(date_str, season, top_n)
 
 
-st.title("Tonight's Home Run Board")
+if os.path.exists(LOGO):
+    hc1, hc2 = st.columns([1, 5], vertical_alignment="center")
+    hc1.image(LOGO, width=76)
+    hc2.title("Tonight's Home Run Board")
+else:
+    st.title("Tonight's Home Run Board")
 
 c1, c2 = st.columns([2, 1])
 date = c1.date_input("Slate date", dt.date.today())
